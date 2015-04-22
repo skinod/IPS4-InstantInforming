@@ -1,6 +1,6 @@
 # IPS4 Instant Informing
 
-Will let users to see notifications alert count without refreshing the page
+Will let users to see new Notifications, Messages, Reports alert count without refreshing the page
 
 ## How To Install
 
