@@ -8,14 +8,19 @@ class hook129 extends _HOOK_CLASS_
 		try
 		{
 			$result = array( 'result' => 'ok', 'count' => array() );
-			\IPS\Member::loggedIn()->recountNotifications();
-			$result['count']['notifications'] = \IPS\Member::loggedIn()->notification_cnt;
 	
-			// \IPS\core\Messenger\Conversation::rebuildMessageCounts( \IPS\Member::loggedIn() );
-			$result['count']['inbox'] = \IPS\Member::loggedIn()->msg_count_new;
+			if(\IPS\Member::loggedIn()->member_id) {
+				\IPS\Member::loggedIn()->recountNotifications();
+				$result['count']['notifications'] = \IPS\Member::loggedIn()->notification_cnt;
 	
-			if( \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'modcp' ) ) and \IPS\Member::loggedIn()->modPermission('can_view_reports')) {
-				$result['count']['reports'] = \IPS\Member::loggedIn()->reportCount();
+				// \IPS\core\Messenger\Conversation::rebuildMessageCounts( \IPS\Member::loggedIn() );
+				$result['count']['inbox'] = \IPS\Member::loggedIn()->msg_count_new;
+	
+				if( \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'modcp' ) ) and \IPS\Member::loggedIn()->modPermission('can_view_reports')) {
+					$result['count']['reports'] = \IPS\Member::loggedIn()->reportCount();
+				}
+			}else{
+				$result['result'] = 'fail';
 			}
 	
 			\IPS\Output::i()->json( $result );
@@ -36,7 +41,11 @@ class hook129 extends _HOOK_CLASS_
 	public function sodGettingInformedOptions() {
 		try
 		{
-			$result = array( 'result' => 'ok', 'interval' => intval(\IPS\Settings::i()->sod_instant_informing_interval)?:10 );
+			if(!\IPS\Member::loggedIn()->member_id) {
+				$result = array('result' => 'fail');
+			}else{
+				$result = array( 'result' => 'ok', 'interval' => intval(\IPS\Settings::i()->sod_instant_informing_interval)?2:10 );
+			}
 			\IPS\Output::i()->json( $result );
 		}
 		catch ( \RuntimeException $e )
@@ -61,7 +70,7 @@ if ( $values = $form->values() )
 	return TRUE;
 }
 
-return $form;]]></settingsCode><tasks/><htmlFiles/><cssFiles/><jsFiles><js filename="sodInstantInforming.js">LyoqCiAqIEF1dGhvcjogU2lqYWQgYWthIG1yLndvc2kKICogU2l0ZTogaHR0cDovL3NraW5vZC5jb20KICovCjsoIGZ1bmN0aW9uKCQsIF8sIHVuZGVmaW5lZCl7CgkidXNlIHN0cmljdCI7CgoJaXBzLnRlbXBsYXRlcy5zZXQoJ3NvZC5JbnN0YW50SW5mb3JtaW5nLmNvdW50JywgIiBcCgkJPHNwYW4gY2xhc3M9J2lwc05vdGlmaWNhdGlvbkNvdW50JyBkYXRhLW5vdGlmaWNhdGlvblR5cGU9J25vdGlmeSc+e3tjb3VudH19PC9zcGFuPlwKCSIpOwoKCXZhciBpbmZvcm1lciA9IGZ1bmN0aW9uKHNjb3BlLCBvcHRpb25zKSB7CgkJdmFyIGRlZmF1bHRzID0gewoJCQlpbnRlcnZhbDogMTAKCQl9OwoKCQl0aGlzLm9wdGlvbnMgPSBfLmRlZmF1bHRzKCBvcHRpb25zLCBkZWZhdWx0cyApOwoJCXRoaXMub3B0aW9ucy5pbnRlcnZhbCAqPSAxMDAwOwoJCXRoaXMuc2NvcGUgPSAkKHNjb3BlKTsKCQl0aGlzLmluaXQoKQoJfQoKCWluZm9ybWVyLnByb3RvdHlwZS5pbml0ID0gZnVuY3Rpb24oKSB7CQkKCQl0aGlzLm5vdGlmaWNhdGlvbnMgCT0gdGhpcy5zY29wZS5maW5kKCcuY05vdGlmaWNhdGlvbnMuY1VzZXJOYXZfaWNvbiA+IGEnKTsKCQl0aGlzLmluYm94IAkJCT0gdGhpcy5zY29wZS5maW5kKCcuY0luYm94LmNVc2VyTmF2X2ljb24gPiBhJyk7CgkJdGhpcy5yZXBvcnRzIAkJPSB0aGlzLnNjb3BlLmZpbmQoJy5jUmVwb3J0cy5jVXNlck5hdl9pY29uID4gYScpOwoJCXRoaXMuc2V0dXBJbnRlcnZhbCgpOwoJfTsKCglpbmZvcm1lci5wcm90b3R5cGUuc2V0dXBJbnRlcnZhbCA9IGZ1bmN0aW9uKCkgewoJCXZhciBzZWxmID0gdGhpczsKCQlzZXRJbnRlcnZhbChmdW5jdGlvbiAoKSB7CgkJCWlmKHNlbGYubGFzdEFqYXgpCgkJCQlzZWxmLmxhc3RBamF4LmFib3J0KCk7CgkJCXNlbGYubGFzdEFqYXggPSBpcHMuZ2V0QWpheCgpKCBpcHMuZ2V0U2V0dGluZygnYmFzZVVSTCcpICsgJz9hcHA9Y29yZSZtb2R1bGU9c3lzdGVtJmNvbnRyb2xsZXI9YWpheCZkbz1zb2RHZXR0aW5nSW5mb3JtZWQnKS5kb25lKGZ1bmN0aW9uKCByZXNwb25zZSApewoJCQkJaWYocmVzcG9uc2UucmVzdWx0ID09ICdvaycpIHsKCQkJCQkkLmVhY2gocmVzcG9uc2UuY291bnQsIGZ1bmN0aW9uKGspIHsKCQkJCQkJaWYoc2VsZltrXSAhPSB1bmRlZmluZWQpIHsKCQkJCQkJCXNlbGZba10uZmluZCgnLmlwc05vdGlmaWNhdGlvbkNvdW50JykucmVtb3ZlKCk7CgkJCQkJCQlpZih0aGlzICE9ICcwJykKCQkJCQkJCQlzZWxmW2tdLmFwcGVuZChpcHMudGVtcGxhdGVzLnJlbmRlcignc29kLkluc3RhbnRJbmZvcm1pbmcuY291bnQnLCB7Y291bnQ6IHRoaXN9KSk7CgkJCQkJCX0KCQkJCQl9KTsKCQkJCX0KCQkJfSk7CgkJfSwgdGhpcy5vcHRpb25zLmludGVydmFsKTsKCX07CgoJJChmdW5jdGlvbigpIHsKCQlpcHMuZ2V0QWpheCgpKCBpcHMuZ2V0U2V0dGluZygnYmFzZVVSTCcpICsgJz9hcHA9Y29yZSZtb2R1bGU9c3lzdGVtJmNvbnRyb2xsZXI9YWpheCZkbz1zb2RHZXR0aW5nSW5mb3JtZWRPcHRpb25zJykuYWx3YXlzKGZ1bmN0aW9uKCByZXNwb25zZSApIHsKCQkJbmV3IGluZm9ybWVyKCQoJyNlbFVzZXJOYXYnKS5hZGQoJyNlbFVzZXJOYXZfbW9iaWxlJyksIHtpbnRlcnZhbDogcmVzcG9uc2UuaW50ZXJ2YWx9KTsKCQl9KTsKCX0pOwoKfShqUXVlcnksIF8pKTsK</js></jsFiles><resourcesFiles/><lang><word key="sod_instant_informing_interval" js="0">Ajax Interval</word></lang><versions><version long="10000" human="1.0.0"><![CDATA[//<?php
+return $form;]]></settingsCode><tasks/><htmlFiles/><cssFiles/><jsFiles><js filename="sodInstantInforming.js">LyoqCiAqIEF1dGhvcjogU2lqYWQgYWthIG1yLndvc2kKICogU2l0ZTogaHR0cDovL3NraW5vZC5jb20KICovCjsoIGZ1bmN0aW9uKCQsIF8sIHVuZGVmaW5lZCl7CgkidXNlIHN0cmljdCI7CgoJaXBzLnRlbXBsYXRlcy5zZXQoJ3NvZC5JbnN0YW50SW5mb3JtaW5nLmNvdW50JywgIiBcCgkJPHNwYW4gY2xhc3M9J2lwc05vdGlmaWNhdGlvbkNvdW50JyBkYXRhLW5vdGlmaWNhdGlvblR5cGU9J25vdGlmeSc+e3tjb3VudH19PC9zcGFuPlwKCSIpOwoKCXZhciBpbmZvcm1lciA9IGZ1bmN0aW9uKHNjb3BlLCBvcHRpb25zKSB7CgkJdmFyIGRlZmF1bHRzID0gewoJCQlpbnRlcnZhbDogMTAKCQl9OwoKCQl0aGlzLm9wdGlvbnMgPSBfLmRlZmF1bHRzKCBvcHRpb25zLCBkZWZhdWx0cyApOwoJCXRoaXMub3B0aW9ucy5pbnRlcnZhbCAqPSAxMDAwOwoJCXRoaXMuc2NvcGUgPSAkKHNjb3BlKTsKCQl0aGlzLmluaXQoKQoJfQoKCWluZm9ybWVyLnByb3RvdHlwZS5pbml0ID0gZnVuY3Rpb24oKSB7CQkKCQl0aGlzLm5vdGlmaWNhdGlvbnMgCT0gdGhpcy5zY29wZS5maW5kKCcuY05vdGlmaWNhdGlvbnMuY1VzZXJOYXZfaWNvbiA+IGEnKTsKCQl0aGlzLmluYm94IAkJCT0gdGhpcy5zY29wZS5maW5kKCcuY0luYm94LmNVc2VyTmF2X2ljb24gPiBhJyk7CgkJdGhpcy5yZXBvcnRzIAkJPSB0aGlzLnNjb3BlLmZpbmQoJy5jUmVwb3J0cy5jVXNlck5hdl9pY29uID4gYScpOwoJCXRoaXMudG90YWwJCQk9ICQoJ1tkYXRhLWlwc2RyYXdlci1kcmF3ZXJlbGVtPSIjZWxNb2JpbGVEcmF3ZXIiXScpOwoJCXRoaXMuc2V0dXBJbnRlcnZhbCgpOwoJfTsKCglpbmZvcm1lci5wcm90b3R5cGUuc2V0dXBJbnRlcnZhbCA9IGZ1bmN0aW9uKCkgewoJCXZhciBzZWxmID0gdGhpczsKCQlzZWxmLmludGVydmFsID0gc2V0SW50ZXJ2YWwoZnVuY3Rpb24gKCkgewoJCQlpZihzZWxmLmxhc3RBamF4KQoJCQkJc2VsZi5sYXN0QWpheC5hYm9ydCgpOwoJCQlzZWxmLmxhc3RBamF4ID0gaXBzLmdldEFqYXgoKSggaXBzLmdldFNldHRpbmcoJ2Jhc2VVUkwnKSArICc/YXBwPWNvcmUmbW9kdWxlPXN5c3RlbSZjb250cm9sbGVyPWFqYXgmZG89c29kR2V0dGluZ0luZm9ybWVkJykuZG9uZShmdW5jdGlvbiggcmVzcG9uc2UgKXsKCQkJCWlmKHJlc3BvbnNlLnJlc3VsdCA9PSAnb2snKSB7CgkJCQkJdmFyIHRvdGFsID0gMDsKCQkJCQkkLmVhY2gocmVzcG9uc2UuY291bnQsIGZ1bmN0aW9uKGspIHsKCQkJCQkJaWYoc2VsZltrXSAhPSB1bmRlZmluZWQpIHsKCQkJCQkJCXNlbGZba10uZmluZCgnLmlwc05vdGlmaWNhdGlvbkNvdW50JykucmVtb3ZlKCk7CgkJCQkJCQlpZih0aGlzICE9ICcwJykgewoJCQkJCQkJCXNlbGZba10uYXBwZW5kKGlwcy50ZW1wbGF0ZXMucmVuZGVyKCdzb2QuSW5zdGFudEluZm9ybWluZy5jb3VudCcsIHtjb3VudDogdGhpc30pKTsKCQkJCQkJCQl0b3RhbCArPSBwYXJzZUludCh0aGlzKTsKCQkJCQkJCX0KCQkJCQkJfQoJCQkJCX0pOwoJCQkJCWNvbnNvbGUubG9nKHRvdGFsKTsKCQkJCQlzZWxmLnRvdGFsLmZpbmQoJy5pcHNOb3RpZmljYXRpb25Db3VudCcpLnJlbW92ZSgpOwoJCQkJCXNlbGYudG90YWwuYXBwZW5kKGlwcy50ZW1wbGF0ZXMucmVuZGVyKCdzb2QuSW5zdGFudEluZm9ybWluZy5jb3VudCcsIHtjb3VudDogdG90YWx9KSk7CgkJCQl9ZWxzZXsKCQkJCQljbGVhckludGVydmFsKHNlbGYuaW50ZXJ2YWwpOwoJCQkJfQoJCQl9KTsKCQl9LCB0aGlzLm9wdGlvbnMuaW50ZXJ2YWwpOwoJfTsKCgkkKGZ1bmN0aW9uKCkgewoJCWlwcy5nZXRBamF4KCkoIGlwcy5nZXRTZXR0aW5nKCdiYXNlVVJMJykgKyAnP2FwcD1jb3JlJm1vZHVsZT1zeXN0ZW0mY29udHJvbGxlcj1hamF4JmRvPXNvZEdldHRpbmdJbmZvcm1lZE9wdGlvbnMnKS5hbHdheXMoZnVuY3Rpb24oIHJlc3BvbnNlICkgewoJCQlpZihyZXNwb25zZS5yZXN1bHQgPT0gJ2ZhaWwnKQoJCQkJcmV0dXJuOwoJCQluZXcgaW5mb3JtZXIoJCgnI2VsVXNlck5hdicpLmFkZCgnI2VsVXNlck5hdl9tb2JpbGUnKSwge2ludGVydmFsOiByZXNwb25zZS5pbnRlcnZhbH0pOwoJCX0pOwoJfSk7Cgp9KGpRdWVyeSwgXykpOwo=</js></jsFiles><resourcesFiles/><lang><word key="sod_instant_informing_interval" js="0">Ajax Interval</word></lang><versions><version long="10000" human="1.0.0"><![CDATA[//<?php
 
 
 /* To prevent PHP errors (extending class does not exist) revealing path */
