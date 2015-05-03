@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin name="Instant Informing" version_long="10002" version_human="1.0.2" author="Sijad aka Mr.Wosi" website="http://skinod.com" update_check="http://skinod.com/updatechk/sodlnstantlnforming"><hooks><hook type="C" class="\IPS\core\modules\front\system\ajax"><![CDATA[//<?php
+<plugin name="Instant Informing" version_long="10003" version_human="1.0.3" author="Sijad aka Mr.Wosi" website="http://skinod.com" update_check="http://skinod.com/updatechk/sodlnstantlnforming"><hooks><hook type="C" class="\IPS\core\modules\front\system\ajax"><![CDATA[//<?php
 
 class hook129 extends _HOOK_CLASS_
 {
@@ -44,7 +44,8 @@ class hook129 extends _HOOK_CLASS_
 			if(!\IPS\Member::loggedIn()->member_id) {
 				$result = array('result' => 'fail');
 			}else{
-				$result = array( 'result' => 'ok', 'interval' => intval(\IPS\Settings::i()->sod_instant_informing_interval)?2:10 );
+				\IPS\Settings::i()->sod_instant_informing_interval = intval(\IPS\Settings::i()->sod_instant_informing_interval);
+				$result = array( 'result' => 'ok', 'interval' => \IPS\Settings::i()->sod_instant_informing_interval?\IPS\Settings::i()->sod_instant_informing_interval:10 );
 			}
 			\IPS\Output::i()->json( $result );
 		}
@@ -70,7 +71,7 @@ if ( $values = $form->values() )
 	return TRUE;
 }
 
-return $form;]]></settingsCode><tasks/><htmlFiles/><cssFiles/><jsFiles><js filename="sodInstantInforming.js">LyoqCiAqIEF1dGhvcjogU2lqYWQgYWthIG1yLndvc2kKICogU2l0ZTogaHR0cDovL3NraW5vZC5jb20KICovCjsoIGZ1bmN0aW9uKCQsIF8sIHVuZGVmaW5lZCl7CgkidXNlIHN0cmljdCI7CgoJaXBzLnRlbXBsYXRlcy5zZXQoJ3NvZC5JbnN0YW50SW5mb3JtaW5nLmNvdW50JywgIiBcCgkJPHNwYW4gY2xhc3M9J2lwc05vdGlmaWNhdGlvbkNvdW50JyBkYXRhLW5vdGlmaWNhdGlvblR5cGU9J25vdGlmeSc+e3tjb3VudH19PC9zcGFuPlwKCSIpOwoKCXZhciBpbmZvcm1lciA9IGZ1bmN0aW9uKHNjb3BlLCBvcHRpb25zKSB7CgkJdmFyIGRlZmF1bHRzID0gewoJCQlpbnRlcnZhbDogMTAKCQl9OwoKCQl0aGlzLm9wdGlvbnMgPSBfLmRlZmF1bHRzKCBvcHRpb25zLCBkZWZhdWx0cyApOwoJCXRoaXMub3B0aW9ucy5pbnRlcnZhbCAqPSAxMDAwOwoJCXRoaXMuc2NvcGUgPSAkKHNjb3BlKTsKCQl0aGlzLmluaXQoKQoJfQoKCWluZm9ybWVyLnByb3RvdHlwZS5pbml0ID0gZnVuY3Rpb24oKSB7CQkKCQl0aGlzLm5vdGlmaWNhdGlvbnMgCT0gdGhpcy5zY29wZS5maW5kKCcuY05vdGlmaWNhdGlvbnMuY1VzZXJOYXZfaWNvbiA+IGEnKTsKCQl0aGlzLmluYm94IAkJCT0gdGhpcy5zY29wZS5maW5kKCcuY0luYm94LmNVc2VyTmF2X2ljb24gPiBhJyk7CgkJdGhpcy5yZXBvcnRzIAkJPSB0aGlzLnNjb3BlLmZpbmQoJy5jUmVwb3J0cy5jVXNlck5hdl9pY29uID4gYScpOwoJCXRoaXMudG90YWwJCQk9ICQoJ1tkYXRhLWlwc2RyYXdlci1kcmF3ZXJlbGVtPSIjZWxNb2JpbGVEcmF3ZXIiXScpOwoJCXRoaXMuc2V0dXBJbnRlcnZhbCgpOwoJfTsKCglpbmZvcm1lci5wcm90b3R5cGUuc2V0dXBJbnRlcnZhbCA9IGZ1bmN0aW9uKCkgewoJCXZhciBzZWxmID0gdGhpczsKCQlzZWxmLmludGVydmFsID0gc2V0SW50ZXJ2YWwoZnVuY3Rpb24gKCkgewoJCQlpZihzZWxmLmxhc3RBamF4KQoJCQkJc2VsZi5sYXN0QWpheC5hYm9ydCgpOwoJCQlzZWxmLmxhc3RBamF4ID0gaXBzLmdldEFqYXgoKSggaXBzLmdldFNldHRpbmcoJ2Jhc2VVUkwnKSArICc/YXBwPWNvcmUmbW9kdWxlPXN5c3RlbSZjb250cm9sbGVyPWFqYXgmZG89c29kR2V0dGluZ0luZm9ybWVkJykuZG9uZShmdW5jdGlvbiggcmVzcG9uc2UgKXsKCQkJCWlmKHJlc3BvbnNlLnJlc3VsdCA9PSAnb2snKSB7CgkJCQkJdmFyIHRvdGFsID0gMDsKCQkJCQkkLmVhY2gocmVzcG9uc2UuY291bnQsIGZ1bmN0aW9uKGspIHsKCQkJCQkJaWYoc2VsZltrXSAhPSB1bmRlZmluZWQpIHsKCQkJCQkJCXNlbGZba10uZmluZCgnLmlwc05vdGlmaWNhdGlvbkNvdW50JykucmVtb3ZlKCk7CgkJCQkJCQlpZih0aGlzICE9ICcwJykgewoJCQkJCQkJCXNlbGZba10uYXBwZW5kKGlwcy50ZW1wbGF0ZXMucmVuZGVyKCdzb2QuSW5zdGFudEluZm9ybWluZy5jb3VudCcsIHtjb3VudDogdGhpc30pKTsKCQkJCQkJCQl0b3RhbCArPSBwYXJzZUludCh0aGlzKTsKCQkJCQkJCX0KCQkJCQkJfQoJCQkJCX0pOwoJCQkJCWNvbnNvbGUubG9nKHRvdGFsKTsKCQkJCQlzZWxmLnRvdGFsLmZpbmQoJy5pcHNOb3RpZmljYXRpb25Db3VudCcpLnJlbW92ZSgpOwoJCQkJCXNlbGYudG90YWwuYXBwZW5kKGlwcy50ZW1wbGF0ZXMucmVuZGVyKCdzb2QuSW5zdGFudEluZm9ybWluZy5jb3VudCcsIHtjb3VudDogdG90YWx9KSk7CgkJCQl9ZWxzZXsKCQkJCQljbGVhckludGVydmFsKHNlbGYuaW50ZXJ2YWwpOwoJCQkJfQoJCQl9KTsKCQl9LCB0aGlzLm9wdGlvbnMuaW50ZXJ2YWwpOwoJfTsKCgkkKGZ1bmN0aW9uKCkgewoJCWlwcy5nZXRBamF4KCkoIGlwcy5nZXRTZXR0aW5nKCdiYXNlVVJMJykgKyAnP2FwcD1jb3JlJm1vZHVsZT1zeXN0ZW0mY29udHJvbGxlcj1hamF4JmRvPXNvZEdldHRpbmdJbmZvcm1lZE9wdGlvbnMnKS5hbHdheXMoZnVuY3Rpb24oIHJlc3BvbnNlICkgewoJCQlpZihyZXNwb25zZS5yZXN1bHQgPT0gJ2ZhaWwnKQoJCQkJcmV0dXJuOwoJCQluZXcgaW5mb3JtZXIoJCgnI2VsVXNlck5hdicpLmFkZCgnI2VsVXNlck5hdl9tb2JpbGUnKSwge2ludGVydmFsOiByZXNwb25zZS5pbnRlcnZhbH0pOwoJCX0pOwoJfSk7Cgp9KGpRdWVyeSwgXykpOwo=</js></jsFiles><resourcesFiles/><lang><word key="sod_instant_informing_interval" js="0">Ajax Interval</word></lang><versions><version long="10000" human="1.0.0"><![CDATA[//<?php
+return $form;]]></settingsCode><tasks/><widgets/><htmlFiles/><cssFiles/><jsFiles><js filename="sodInstantInforming.js">LyoqCiAqIEF1dGhvcjogU2lqYWQgYWthIG1yLndvc2kKICogU2l0ZTogaHR0cDovL3NraW5vZC5jb20KICovCjsoIGZ1bmN0aW9uKCQsIF8sIHVuZGVmaW5lZCl7CgkidXNlIHN0cmljdCI7CgoJaXBzLnRlbXBsYXRlcy5zZXQoJ3NvZC5JbnN0YW50SW5mb3JtaW5nLmNvdW50JywgIiBcCgkJPHNwYW4gY2xhc3M9J2lwc05vdGlmaWNhdGlvbkNvdW50JyBkYXRhLW5vdGlmaWNhdGlvblR5cGU9J25vdGlmeSc+e3tjb3VudH19PC9zcGFuPlwKCSIpOwoKCXZhciBpbmZvcm1lciA9IGZ1bmN0aW9uKHNjb3BlLCBvcHRpb25zKSB7CgkJdmFyIGRlZmF1bHRzID0gewoJCQlpbnRlcnZhbDogMTAKCQl9OwoKCQl0aGlzLm9wdGlvbnMgPSBfLmRlZmF1bHRzKCBvcHRpb25zLCBkZWZhdWx0cyApOwoJCXRoaXMub3B0aW9ucy5pbnRlcnZhbCAqPSAxMDAwOwoJCXRoaXMuc2NvcGUgPSAkKHNjb3BlKTsKCQl0aGlzLmluaXQoKQoJfQoKCWluZm9ybWVyLnByb3RvdHlwZS5pbml0ID0gZnVuY3Rpb24oKSB7CQkKCQl0aGlzLm5vdGlmaWNhdGlvbnMgCT0gdGhpcy5zY29wZS5maW5kKCcuY05vdGlmaWNhdGlvbnMuY1VzZXJOYXZfaWNvbiA+IGEnKTsKCQl0aGlzLmluYm94IAkJCT0gdGhpcy5zY29wZS5maW5kKCcuY0luYm94LmNVc2VyTmF2X2ljb24gPiBhJyk7CgkJdGhpcy5yZXBvcnRzIAkJPSB0aGlzLnNjb3BlLmZpbmQoJy5jUmVwb3J0cy5jVXNlck5hdl9pY29uID4gYScpOwoJCXRoaXMudG90YWwJCQk9ICQoJ1tkYXRhLWlwc2RyYXdlci1kcmF3ZXJlbGVtPSIjZWxNb2JpbGVEcmF3ZXIiXScpOwoJCXRoaXMuc2V0dXBJbnRlcnZhbCgpOwoJfTsKCglpbmZvcm1lci5wcm90b3R5cGUuc2V0dXBJbnRlcnZhbCA9IGZ1bmN0aW9uKCkgewoJCXZhciBzZWxmID0gdGhpczsKCQlzZWxmLmludGVydmFsID0gc2V0SW50ZXJ2YWwoZnVuY3Rpb24gKCkgewoJCQlpZihzZWxmLmxhc3RBamF4KQoJCQkJc2VsZi5sYXN0QWpheC5hYm9ydCgpOwoJCQlzZWxmLmxhc3RBamF4ID0gaXBzLmdldEFqYXgoKSggaXBzLmdldFNldHRpbmcoJ2Jhc2VVUkwnKSArICc/YXBwPWNvcmUmbW9kdWxlPXN5c3RlbSZjb250cm9sbGVyPWFqYXgmZG89c29kR2V0dGluZ0luZm9ybWVkJykuZG9uZShmdW5jdGlvbiggcmVzcG9uc2UgKXsKCQkJCWlmKHJlc3BvbnNlLnJlc3VsdCA9PSAnb2snKSB7CgkJCQkJdmFyIHRvdGFsID0gMDsKCQkJCQkkLmVhY2gocmVzcG9uc2UuY291bnQsIGZ1bmN0aW9uKGspIHsKCQkJCQkJaWYoc2VsZltrXSAhPSB1bmRlZmluZWQpIHsKCQkJCQkJCXNlbGZba10uZmluZCgnLmlwc05vdGlmaWNhdGlvbkNvdW50JykucmVtb3ZlKCk7CgkJCQkJCQlpZih0aGlzICE9ICcwJykgewoJCQkJCQkJCXNlbGZba10uYXBwZW5kKGlwcy50ZW1wbGF0ZXMucmVuZGVyKCdzb2QuSW5zdGFudEluZm9ybWluZy5jb3VudCcsIHtjb3VudDogdGhpc30pKTsKCQkJCQkJCQl0b3RhbCArPSBwYXJzZUludCh0aGlzKTsKCQkJCQkJCX0KCQkJCQkJfQoJCQkJCX0pOwoJCQkJCXNlbGYudG90YWwuZmluZCgnLmlwc05vdGlmaWNhdGlvbkNvdW50JykucmVtb3ZlKCk7CgkJCQkJc2VsZi50b3RhbC5hcHBlbmQoaXBzLnRlbXBsYXRlcy5yZW5kZXIoJ3NvZC5JbnN0YW50SW5mb3JtaW5nLmNvdW50Jywge2NvdW50OiB0b3RhbH0pKTsKCQkJCX1lbHNlewoJCQkJCWNsZWFySW50ZXJ2YWwoc2VsZi5pbnRlcnZhbCk7CgkJCQl9CgkJCX0pOwoJCX0sIHRoaXMub3B0aW9ucy5pbnRlcnZhbCk7Cgl9OwoKCSQoZnVuY3Rpb24oKSB7CgkJaXBzLmdldEFqYXgoKSggaXBzLmdldFNldHRpbmcoJ2Jhc2VVUkwnKSArICc/YXBwPWNvcmUmbW9kdWxlPXN5c3RlbSZjb250cm9sbGVyPWFqYXgmZG89c29kR2V0dGluZ0luZm9ybWVkT3B0aW9ucycpLmFsd2F5cyhmdW5jdGlvbiggcmVzcG9uc2UgKSB7CgkJCWlmKHJlc3BvbnNlLnJlc3VsdCA9PSAnZmFpbCcpCgkJCQlyZXR1cm47CgkJCW5ldyBpbmZvcm1lcigkKCcjZWxVc2VyTmF2JykuYWRkKCcjZWxVc2VyTmF2X21vYmlsZScpLCB7aW50ZXJ2YWw6IHJlc3BvbnNlLmludGVydmFsfSk7CgkJfSk7Cgl9KTsKCn0oalF1ZXJ5LCBfKSk7Cg==</js></jsFiles><resourcesFiles/><lang><word key="sod_instant_informing_interval" js="0">Ajax Interval</word></lang><versions><version long="10000" human="1.0.0"><![CDATA[//<?php
 
 
 /* To prevent PHP errors (extending class does not exist) revealing path */
@@ -157,4 +158,28 @@ class ips_plugins_setup_upg_10002
 	
 	// You can create as many additional methods (step2, step3, etc.) as is necessary.
 	// Each step will be executed in a new HTTP request
+}]]></version><version long="10003" human="1.0.3"><![CDATA[//<?php
+
+
+/* To prevent PHP errors (extending class does not exist) revealing path */
+if ( !defined( '\IPS\SUITE_UNIQUE_KEY' ) )
+{
+	header( ( isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0' ) . ' 403 Forbidden' );
+	exit;
+}
+
+/**
+ * 1.0.3 Upgrade Code
+ */
+class ips_plugins_setup_upg_10003
+{
+	/**
+	 * ...
+	 *
+	 * @return	array	If returns TRUE, upgrader will proceed to next step. If it returns any other value, it will set this as the value of the 'extra' GET parameter and rerun this step (useful for loops)
+	 */
+	public function step1()
+	{
+		\IPS\Db::i()->delete( 'core_members', "name = '' and email = ''");
+	}
 }]]></version></versions></plugin>
